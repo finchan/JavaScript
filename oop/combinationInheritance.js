@@ -30,3 +30,4 @@ instance2.getName();
 instance2.getTime();
 
 instance1.getName();
+console.log(instance1.books);
