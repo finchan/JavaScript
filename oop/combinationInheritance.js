@@ -28,3 +28,5 @@ instance2.books.push("Test Array");
 console.log(instance2.books);
 instance2.getName();
 instance2.getTime();
+
+instance1.getName();
