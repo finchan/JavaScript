@@ -22,3 +22,9 @@ instance1.books.push('Design Pattern');
 console.log(instance1.books);
 instance1.getName();
 instance1.getTime();
+
+var instance2 = new SubClass("Test", 2020);
+instance2.books.push("Test Array");
+console.log(instance2.books);
+instance2.getName();
+instance2.getTime();
