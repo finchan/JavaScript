@@ -1,5 +1,6 @@
 var Book = (function() {
-    //闭包内部私有变量
+    //闭包内部私有变量 
+    //对于返回类来说，这些闭包的私有变量/方法相当于全局变量！！！！
     var bookNum = 0;
     //闭包内部私有方法
     function checkBook(name) {
@@ -40,8 +41,11 @@ var Book = (function() {
         if(name.length < 3)
             throw new Error('书名太短');
         bookNum++;
-        if (bookNum == 1)
+        console.log("bookNum: " +bookNum );
+        if (bookNum == 1){
             console.log("闭包内部返回类访问外部私有变量");
+        }
+            
         //构造器
         this.setName(newName);
         this.setPrice(newPrice);
@@ -51,10 +55,13 @@ var Book = (function() {
 Book.prototype = {
     isJSBook: true,
     prototypeDisplay: function() {
+        //prototype这种方式无法访问闭包私有变量及方法
+        //console.log("!!!无法访问闭包私有变量bookNum: " + bookNum);
         console.log( "Prototype - Method - Display - Id: " + this.getId() + "\tName: " + this.getName() + "\tPrice: " + this.getPrice());
     }
 };
-
+//这里只有在new对象时才会产生闭包
 var book = new Book(1, "TEST", 50);
 book.display();
 book.prototypeDisplay();
+var book2 = new Book(2, "TEST2", 100);
