@@ -55,8 +55,9 @@ var Book = (function() {
 Book.prototype = {
     isJSBook: true,
     prototypeDisplay: function() {
-        //prototype这种方式无法访问闭包私有变量及方法
+        //prototype这种方式无法访问闭包私有变量及方法，因为它将闭包定义的对象，在闭包之外进行扩展（通过Prototype)，这种定义是无法访问到闭包的私有变量和方法。
         //console.log("!!!无法访问闭包私有变量bookNum: " + bookNum);
+        console.log(bookNum);
         console.log( "Prototype - Method - Display - Id: " + this.getId() + "\tName: " + this.getName() + "\tPrice: " + this.getPrice());
     }
 };
