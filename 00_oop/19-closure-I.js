@@ -1,6 +1,8 @@
 var Book = (function() {
     //闭包内部私有变量 
     //对于返回类来说，这些闭包的私有变量/方法相当于全局变量！！！！
+    //闭包访问类属性变量this.property<->that.property参考04_builder>02-builder.js
+    //进行扩展阅读
     var bookNum = 0;
     //闭包内部私有方法
     function checkBook(name) {
