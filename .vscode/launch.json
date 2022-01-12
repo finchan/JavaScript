@@ -5,11 +5,13 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Launch Edge",
+            "type": "pwa-node",
             "request": "launch",
-            "type": "pwa-msedge",
-            "url": "http://localhost:8080",
-            "webRoot": "${workspaceFolder}"
+            "name": "Launch Program",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}\\basic\\modules_intro\\commonjs-require.js"
         }
     ]
 }
