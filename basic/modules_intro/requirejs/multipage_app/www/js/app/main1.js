@@ -1,3 +1,5 @@
+//模块定义里的require引用可以使用baseUrl或者paths指定的目录名称
+//也可以使用相对路径，相对路径是当前的js所在目录为基点
 define(function (require) {
     var $ = require('jquery'),
         lib = require('./lib'),

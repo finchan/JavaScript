@@ -1,5 +1,5 @@
 define(function () {
-    return function print(msg) {
+    return function (msg) {
         console.log(msg);
     };
 });
