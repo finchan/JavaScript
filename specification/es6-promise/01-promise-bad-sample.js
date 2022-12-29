@@ -22,7 +22,6 @@ promise.then(function(value) {
 function execute(resolve) {
     log("Async Code")
     resolve("Done")
-
 }
 
 function log(msg) {

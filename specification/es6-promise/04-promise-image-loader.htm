@@ -1,17 +1,27 @@
-function loadImageAsync(url) {
-    return new Promise((resolve, reject) => {
-        var image = new Image();
-        image.onload = function() {
-            resolve(image)
-        }
-        image.onerror = function() {
-            reject(new Error('Could not load image at ' + url))
-        }
-        image.src = url
-    })
-}
-loadImageAsync('https://www.baidu.com/img/flexible/logo/pc/result.png').then((value)=>{
-    console.log(["Success", value])
-}, (error) =>{
-    console.log(["Failed", error])
-})
+<html>
+    <body>
+        <script>
+            function loadImageAsync(url) {
+                return new Promise((resolve, reject) => {
+                    let image = new Image()
+                    image.onload = function() {
+                        debugger
+                        resolve(image)
+                    }
+                    image.onerror = function() {
+                        debugger
+                        reject(new Error('Could not load image at ' + url))
+                    }
+                    debugger
+                    //  先执行的是下面的同步代码，之后才是onload/onerror事件的处理
+                    image.src = url
+                })
+            }
+            loadImageAsync('https://www.baidu.com/img/flexible/logo/pc/result.png').then((value)=>{
+                console.log(["Success", value])
+            }, (error) =>{
+                console.log(["Failed", error])
+            })
+        </script>
+    </body>
+</html>
