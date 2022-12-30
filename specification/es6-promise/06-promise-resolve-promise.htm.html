@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <script>
+        let p1 = new Promise((resolve, reject) => {
+            setTimeout(()=>reject(new Error('failed')), 5000)
+            // setTimeout(()=>resolve("Done"), 5000)
+        })
+        let p2 = new Promise((resolve, reject) => {
+            //  resolve除了可以返回正常值还可以返回其他Promise的结果
+            //  也就是它自身由其他Promise的状态决定，这里即便使用resolve其他Promise状态
+            //  其他Promise状态reject，这个Promise的状态也为Reject
+            //  且这里的Promise要等待其他Promise状态改变后当前的回调函数才会执行
+            setTimeout(()=> resolve(p1), 1000)
+        })
+        p2.then(result => console.log(result))
+            .catch(error=> console.log(error))
+    </script>
+</body>
+</html>

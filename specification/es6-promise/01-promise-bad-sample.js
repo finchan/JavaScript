@@ -11,6 +11,7 @@ const promise = new Promise(function (resolve, reject) {
     //  但是如果这里不设置Promise状态，这个例子就是可行的，因为then方法只针对状态改变才调用
     resolve("Success!")
     // reject("Failed!")
+    console.log("Still run")
 });
 
 promise.then(function(value) {

@@ -1,0 +1,38 @@
+<html>
+    <body>
+        <script>
+            let getJSON = function(url) {
+                let promise = new Promise((resolve, reject) => {
+                    let client = new XMLHttpRequest()
+                    client.open("GET", url)
+                    client.onreadystatechange = handler;
+                    debugger
+                    client.responseType = "json"
+                    client.setRequestHeader("Accept", "application/json")
+                    client.send()
+
+                    //  事件函数可以放在Promise内部，考虑到this的上下文，及事件处理函数调用promise提供的resolve和reject函数
+                    function handler() {
+                        if (this.readyState !== 4) return;
+                        if (this.status === 200) {
+                            resolve(this.response)
+                        } else {
+                            debugger
+                            //  通常是带Error对象的实例
+                            reject(new Error(a.statusText))
+                        }
+                    }
+                })
+
+                return promise
+            }
+
+            //  ApiFox Sample Pet Project
+            getJSON("http://127.0.0.1:4523/m1/1623078-0-default/pet/1").then(function(json){
+                console.log("Contents: " + JSON.stringify(json))
+            }, function(error){
+                console.error('Error - ', error)
+            })
+        </script>
+    </body>
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+  <script>
+    let getJSON = function(url) {
+      let promise = new Promise((resolve, reject) => {
+        let client = new XMLHttpRequest()
+        client.open("GET", url)
+        client.onreadystatechange = handler;
+        client.responseType = "json"
+        client.setRequestHeader("Accept", "application/json")
+        client.send()
+
+        //  事件函数可以放在Promise内部，考虑到this的上下文，及事件处理函数调用promise提供的resolve和reject函数
+        function handler() {
+          if (this.readyState !== 4) return;
+          if (this.status === 200) {
+            resolve(this.response)
+          } else {
+            //  通常是带Error对象的实例
+            reject(new Error(a.statusText))
+          }
+        }
+      })
+      return promise
+    }
+
+    getJSON("http://127.0.0.1:4523/m1/1623078-0-default/pet/1").then(
+      json => getJSON("http://127.0.0.1:4523/m1/1623078-0-default/pet/1")
+    ).then(
+      json => console.log("Resolved: " + JSON.stringify(json)),
+      err => console.log("Rejected: " + err)
+    )
+  </script>
+</body>
+</html>

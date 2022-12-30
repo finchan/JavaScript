@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+  <script>
+    let getJSON = function(url) {
+      let promise = new Promise((resolve, reject) => {
+        let client = new XMLHttpRequest()
+        client.open("GET", url)
+        client.onreadystatechange = handler;
+        client.responseType = "json"
+        client.setRequestHeader("Accept", "application/json")
+        client.send()
+
+        //  事件函数可以放在Promise内部，考虑到this的上下文，及事件处理函数调用promise提供的resolve和reject函数
+        function handler() {
+          if (this.readyState !== 4) return;
+          if (this.status === 200) {
+            resolve(this.response)
+          } else {
+            //  通常是带Error对象的实例
+            reject(new Error(a.statusText))
+          }
+        }
+      })
+      return promise
+    }
+
+    // let json = {
+    //   "code": 0,
+    //   "data": {
+    //     "id": "1",
+    //     "name": "龙信式",
+    //     "photoUrls": ["http://dummyimage.com/200x200"],
+    //     "category": {"id": 1658468317184212, "name": "Cat"},
+    //     "tags": [{"id": 3292805485575158, "name": "cat"}],
+    //     "status": "available"
+    //   }
+    // }
+
+    //  第一个then回调方法完成以后，会将结果作为参数传入第二个回调函数
+    //  then里面代码显示的返回的可以是普通对象，也可以是Promise对象
+    //  但即便是返回普通的对象，then方法最终返回的是一个新的Promise实例（注意，不是原来的哪个Promise实例）
+    //  then里如果直接返回一个Promise对象，后一个回调函数（then）就需要等待前一个Promise的状态变化再被调用
+    //  因此可以采用链式写法，即then方法后面在调用另一个then方法
+    //  then里面可以显示的返回一个Promise对象，也可以返回普通对象
+    getJSON("http://127.0.0.1:4523/m1/1623078-0-default/pet/1")
+        .then(json => {
+            console.log("then - log 1")
+            return getJSON("http://127.0.0.1:4523/m1/1623078-0-default/pet/1")
+        }).then(json => {
+            if (json.code === 0) {
+                console.log("then - log 2")
+                console.log(json)
+                return json.data
+            } else {
+                return {}
+            }
+        }).then(data => {
+            console.log("then - log 3")
+            console.log(data)
+            console.log(data.photoUrls)
+        })
+  </script>
+</body>
+</html>
