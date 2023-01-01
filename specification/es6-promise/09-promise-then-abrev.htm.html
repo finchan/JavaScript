@@ -22,7 +22,7 @@
             resolve(this.response)
           } else {
             //  通常是带Error对象的实例
-            reject(new Error(a.statusText))
+            reject(new Error(this.statusText))
           }
         }
       })

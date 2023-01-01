@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script>
+//  reject进入catch，无论reject值为普通的值或者Error，都会被catch捕获。
+//  建议then里面第二个参数不在提供，这部分功能应该转入catch中处理，catch的方法签名同then第二个参数
+//  catch(error=>{})等同于then(null, error=>{})
+//  如果then提供了第二个reject的操作，同时也提供catch，那么只执行最早捕获的reject（就是then里的）
+//  Promise对象的错误具有“冒泡”性质，会一直向后传递，直到被捕获为止。错误总会被下一个catch语句捕获。
+//  所以一般不要在then方法中定义Rejected状态的回调函数，而总应该使用catch方法
+let promise1 = new Promise((resolve, reject) =>{
+    console.log("promise1 start")
+    reject(new Error("Error"))
+    console.log("Promise1 Done")
+})
+promise1.then(data=>console.log(data),error=>console.log("promise1 - 1-",error.message))
+    .catch(error=>console.log("promise1 - 2-",error.message))
+
+
+let promise2 = new Promise((resolve, reject) =>{
+    console.log("promise2 start")
+    reject(new Error("Error"))
+})
+promise2.then(data=>console.log(data))
+        .catch(error=>console.log("promise2",error.message))
+
+let promise3 = new Promise((resolve, reject) =>{
+    console.log("promise3 start")
+    reject(new Error("Error"))
+})
+promise3.then(data=>console.log(data))
+        .then(null, error=>console.log("promise3",error.message))
+
+
+//  如果promise直接抛出一个异常，直接抛出异常后面的代码不会执行
+//  但是如果通过reject（new Error），那么promise后面的代码仍然继续运行，参照promise1
+//  promise中抛出的异常，不论是直接抛出还是通过reject(new Error)都要catch捕获
+//  promise中直接抛出异常，即便不调用reject，仍然被判定为rejected状态的变化，但如果是try/catch，同时没有显式的reject，则Promise状态不变化，仍然是pending
+let promise4 = new Promise((resolve, reject) =>{
+    console.log("promise4 start")
+    throw new Error('test')
+    console.log("promise4 after error")
+})
+promise4.catch(error=>{
+    console.log("Promise4",error.message);
+    // debugger
+})
+
+//  不同的promise，通过then捕获的异常的回调函数的优先级要高于catch捕获的异常回调函数
+//  不同的promise，在promise内部直接抛出异常(throws Error)或者try/catch(reject(3))的回调函数优先级要高于直接resolve(new Error)
+let promise5 = new Promise((resolve, reject) =>{
+    console.log("promise5 start")
+    try{
+        throw new Error('test')
+    } catch(e){
+        reject(e)
+    }
+})
+promise5.catch(error=>console.log("Promise5",error.message))
+
+
+//  resolve的参数如果是Error，也被认定为成功切换成Resolved状态
+//  不同的Promise，resolve(new Error)回调函数的优先级超过reject(new Error),即：then要优先于catch
+let promise6 = new Promise((resolve, reject)=>{
+    console.log("promise6 start")
+    resolve(new Error("Promise6 Error"))
+})
+promise6.then(data=>console.log("Promise6 - then ",data.message))
+        .catch(error=>console.log("Promise6 - Catch", error.message))
+
+
+//  如果Promise状态已经改变，无论是rejectd还是resolved，再抛出异常是无效的(直接抛出，不是try/catch方式)
+let promise7 = new Promise((resolve, reject) =>{
+    console.log("promise7 start")
+    try{
+        throw new Error('promise7 test error')
+    }catch(e){
+
+    }
+    //  但如果直接抛出异常，状态直接变成Rejected，后面的代码不再执行
+    //  上面的代码通过try/catch抛出并捕获，下面的代码仍然执行，且状态为Resolved
+    resolve("ok")
+    // reject("error")
+    console.log("Continue executing")
+
+    console.log("stop running")
+})
+promise7
+    .then(data=>console.log("promise7",data))
+    .catch(error=>console.log("promise7 -error: ",error))
+
+
+//  如果没有使用catch指定错误处理（此处x未定义错误），Promise对象抛出的错误不会传递到外层。
+//  但这个例子浏览器会打印错误"ReferenceError: x is not defined"
+let someAsyncThing = function() {
+   console.log("promise8 start")
+   return new Promise((resolve, reject)=>{
+       //   此处相当于直接throw一个异常，状态转换成Rejected
+       resolve(x+2)
+   })
+}
+someAsyncThing().then(()=>{
+    console.log('everything is great')
+})
+
+
+//  这个例子，setTimeout属于下一个事件循环，不同于直接抛出异常，因为直接在状态变更后抛出异常是不再执行的
+//  同时，这个错误是在Promise函数体外抛出的，会冒泡到最外层，成了未捕获的错误(不论是否提供catch捕获，都是Promise无法捕获的)
+let promise9 = new Promise((resolve, reject)=>{
+    console.log("promise9 start")
+    resolve('ok')
+    setTimeout(()=>{throw new Error('promise 9 error')}, 0)
+})
+promise9.then((value)=>console.log("promise9 ", value))
+        .catch(error=>console.log(error.message))
+
+
+//  需要注意的是catch方法返回的还是一个Promise对象，因此后面还可以接着调用then方法
+let someAsyncThing2 = function() {
+    return new Promise((resolve, reject)=>{
+        console.log("promise10 start")
+        resolve(x+2)
+    })
+}
+someAsyncThing2()
+    .catch(error=>console.log('promise10 errors: ', error.message))
+    .then(()=>{
+        console.log("promise10 carry on")
+    })
+
+
+//  如果没有报错，会跳过catch，直接执行后面的then方法，如果后面的then里面报错，就与前面的catch无关了。
+Promise.resolve()
+    .catch(error=>{
+        console.log('Promise11 ', error)
+    })
+    .then((value)=>{    //then中可以不提供参数then(()=>{})
+        console.log('Promise11 Carry on', value==null?"Null of value":value);
+    })
+
+
+//  catch里面也可以再抛出异常
+Promise.reject(new Error("ERROR"))
+    .catch(error=>{
+        console.log('Promise12 - ERROR1 - ', error.message)
+        y+1
+    }).catch(error=>{
+        console.log("promise12 - ERROR2 - ", error.message)
+})
+</script>
+</body>
+</html>

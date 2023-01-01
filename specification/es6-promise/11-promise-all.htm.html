@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script>
+    let getJSON = function(url) {
+        let promise = new Promise((resolve, reject) => {
+            let client = new XMLHttpRequest()
+            client.open("GET", url)
+            client.onreadystatechange = handler;
+            client.responseType = "json"
+            client.setRequestHeader("Accept", "application/json")
+            client.send()
+
+            function handler() {
+                if (this.readyState !== 4) return;
+                if (this.status === 200) {
+                    resolve(this.response)
+                } else {
+                    let error = "ResponseURL:"+this.responseURL + " || ERROR MESSAGE: " +this.statusText
+                    reject(new Error(error))
+                }
+            }
+        })
+        return promise
+    }
+    let promises = [1,2,3,4,5,6].map(id=>{
+        //return getJSON('http://127.0.0.1:4523/m1/1908193-0-default/getjson/'+id)
+        return getJSON('http://127.0.0.1:4523/m1/1908193-0-default/getjson2/'+id+'?apifoxResponseId=144008204')
+    })
+
+
+    //  如果所有的promise都是Fullfilled，Promise.all的状态就是fullfilled
+    //  它们的返回值构成的数组作为all的then回调的值
+    //  如果有一个被Rejected，Promise.all的状态就是Rejected
+    //  第一个被Rejected的实例的返回值会传递给Promise.all的catch回调函数
+    Promise.all(promises).then(pros=>{
+        console.log(pros)
+        for(let i=0; i<pros.length;i++) {
+            console.log(pros[i].data.age)
+        }
+    }).catch(error=>{
+        console.log(error.message)
+    })
+
+
+    //  如果作为参数的Promise实例自身定义了catch方法，那么它被rejected时并不会触发Promise.all()的catch方法
+    //  因为Promise的catch方法返回的是一个新的Promise实例，该实例执行完catch方法后会变成resolved
+    const p1 = new Promise((resolve, reject)=>{
+        resolve("Hello")
+    }).then(result=>result)
+    .catch(e=>e.message)
+
+    const p2 = new Promise((resolve, reject) =>{
+        throw new Error('Error')
+    }).then(result=>result)
+    .catch(e=>e.message)
+
+    Promise.all([p1, p2])
+    .then(result=>console.log(result))
+    .catch(e=>console.log(e))
+
+    //  对比上面的例子，注意下运行结果
+    const p11 = new Promise((resolve, reject)=>{
+        resolve("Hello")
+    }).then(result=>result)
+
+    const p12 = new Promise((resolve, reject) =>{
+        throw new Error('Error')
+    }).then(result=>result)
+
+    Promise.all([p11, p12])
+        .then(result=>console.log(result))
+        .catch(e=>console.log(e.message))
+</script>
+</body>
+</html>
