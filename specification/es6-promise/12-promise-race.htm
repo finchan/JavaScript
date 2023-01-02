@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script>
+    //  Promise.race方法要求只要有一个promise状态率先发生改变，那个率先发生改变的Promise实例的返回值就传递给Promise.race的回调函数
+    const p = Promise.race([
+        fetch("http://127.0.0.1:4523/m1/1908193-0-default/resource-that-may-take-a-while",{
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(response=>response.json()),
+        new Promise((resolve, reject)=>{
+            setTimeout(()=>reject(new Error("request timeout")), 5000)
+        })
+    ]);
+    p.then(response=>console.log(response))
+    p.catch(error=>console.log(error))
+</script>
+</body>
+</html>

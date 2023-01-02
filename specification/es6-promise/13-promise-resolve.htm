@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script>
+    //  Promise.resolve将现有对象转为Promise对象，可以转换thenable对象、普通对象或者非对象
+    //  以下两种定义是是等价的
+    let p1 =  Promise.resolve('foo')
+    let p2 = new Promise(resolve=>resolve('foo'))
+
+    //  1.参数是一个Promise实例 - 原封不动的返回这个实例
+    let p3 = Promise.resolve(p1)
+    if(p3 === p1) console.log("The same")   //p3 is p1
+    //  2. 参数是一个thenable对象(thenable对象是值具有then方法的对象)
+    //  Promise.resolve方法会将这个对象转为Promise对象，然后立即执行thenable对象的then方法
+    let thenable = {
+        then: function(resolve, reject){
+            resolve(42)
+        }
+    }
+    let p4 = Promise.resolve(thenable)
+    p4.then(value=>{
+        console.log(value)
+    })
+    //  3. 参数是不具有then方法的对象或根本不是对象
+    //  Promise.resolve方法返回一个新的Promise对象，状态为Resolved
+    //  一下两个例子立即resolve的Promise对象实在本轮“事件循环”结束时，而不是在下一轮“事件循环”开始时
+    let p5 = Promise.resolve('hello')
+    p5.then(s=>console.log(s));
+    //  4. 不带有任何参数
+    //  Promise.resolve()可以不带有任何参数，直接返回一个Resolved状态的Promise对象
+    let p6 = Promise.resolve()
+    p6.then(()=>console.log("No Parameter"))
+
+    //  注意下面的程序它们的执行顺序
+    //  setTimeout在下一轮“事件循环”开始时执行的
+    //  Promise.resolve()在本轮“事件循环”结束是执行
+    //  console.log('one')则是立即执行
+    setTimeout(function() {
+        console.log('three')
+    },0)
+    Promise.resolve().then(function() {
+        console.log("two")
+    })
+    console.log('one')
+
+</script>
+</body>
+</html>

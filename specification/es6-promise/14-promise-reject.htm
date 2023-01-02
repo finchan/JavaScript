@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script>
+    //  Promise.reject(reason)方法也会返回一个新的Promise实例，状态为Rejected，回调函数立即执行
+    let p1 = Promise.reject('出错了1')
+    p1.then(null, s=>console.log(s))
+    //  以上代码等同于如下代码
+    let p2 = new Promise((resolve, reject) =>{
+        reject('出错了2')
+    })
+    p2.then(null, s=>console.log(s))
+
+    //  Promise.reject()方法的参数是一个thenable对象，执行后，后面的catch方法的参数是thenable对象本身
+    const thenable = {
+        then(resolve, reject) {
+            reject('出错了3')
+        }
+    }
+    Promise.reject(thenable)
+    .catch(e=>{
+        console.log(e===thenable)
+        console.log(e)
+    })
+</script>
+</body>
+</html>
