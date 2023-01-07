@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .test{
+            background-color:#FCC;
+        }
+    </style>
+</head>
+<body>
+    <p>1</p>
+    <p>2</p>
+    <script>
+        let str = "hello"
+        for(let s of str) {
+            console.log(s)
+        }
+
+        //  DOM NodeList
+        let paras = document.querySelectorAll("p")
+        for(let p of paras) {
+            p.classList.add("test")
+        }
+
+        //  arguments
+        function printArgs() {
+            for(let x of arguments) {
+                console.log(x)
+            }
+        }
+        printArgs("a", "b")
+
+        let arrayLike = {
+            length: 2,
+            0: 'axxx',
+            1: 'bxxx'
+        }
+         // 报错 TypeError: arrayLike is not iterable
+        for(let x of arrayLike){
+            console.log(x)
+        }
+        //  正确的处理方式
+        for(let x of Array.from(arrayLike)) {
+            console.log(x)
+        }
+    </script>
+</body>
+</html>

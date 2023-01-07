@@ -23,3 +23,4 @@ function range(start, stop){
 for(let val of range(0,3)) {
     console.log(val)
 }
+
