@@ -120,3 +120,35 @@ function step4(value) {
     console.log("step4",value)
     return value +4 ;
 }
+
+
+//  for...of -> Generator
+function step1Func(){
+    console.log("Step1Func...")
+    console.log("Step1Func.1..")
+    console.log("Step1Func.2..")
+    console.log("Step1Func.3..")
+}
+function step2Func(){
+    console.log("step2Func...")
+    console.log("step2Func.1..")
+    console.log("step2Func.2..")
+    console.log("step2Func.3..")
+}
+function step3Func(){
+    console.log("step3Func...")
+    console.log("step3Func.1..")
+    console.log("step3Func.2..")
+    console.log("step3Func.3..")
+}
+let steps = [step1Func, step2Func, step3Func]
+
+function* iterateSteps(steps) {
+    for(let i = 0; i< steps.length; i++) {
+        let step = steps[i]
+        yield step()
+    }
+}
+for(let step of iterateSteps(steps)) {
+
+}
