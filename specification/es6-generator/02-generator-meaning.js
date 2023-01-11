@@ -152,3 +152,26 @@ function* iterateSteps(steps) {
 for(let step of iterateSteps(steps)) {
 
 }
+
+function* iterEntries(obj){
+    let keys = Object.keys(obj);
+    for(let i=0; i<keys.length; i++) {
+        let key = keys[i]
+        yield [key, obj[key]]
+    }
+}
+let myObj = {foo:3, bar:7}
+for(let [key, value] of iterEntries(myObj)) {
+    console.log(key, value)
+}
+
+function* arrayGenerator(array) {
+    let index = 0;
+    while(index<array.length) {
+        yield array[index++]
+    }
+}
+let arrayGen = arrayGenerator(['yo', 'ya'])
+console.log(arrayGen.next().value)
+console.log(arrayGen.next().value)
+console.log(arrayGen.next().done)
