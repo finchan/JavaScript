@@ -20,3 +20,8 @@ let a = foo(5)
 console.log(a.next())
 console.log(a.next())
 console.log(a.next())
+
+let b = foo(5)
+console.log(b.next())
+console.log(b.next(12))
+console.log(b.next(13))
