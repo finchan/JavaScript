@@ -1,0 +1,57 @@
+<script>
+// function* asyncJob() {
+//     console.log("Other Codes1")
+//     let f = yield readFile()
+//     console.log("Other Codes2")
+//     console.log("Other Codes3")
+// }
+//
+// function readFile() {
+//     console.log("yield block1")
+//     setTimeout(()=>{
+//         console.log("yield block3")
+//         s.next()
+//         console.log("yield block4")
+//     }, 5000)
+//     console.log("yield block2")
+// }
+//
+// let s = asyncJob()
+// s.next()
+//
+// function* gen(x){
+//     let y = yield x + 2;
+//     return y;
+// }
+// let g = gen(1);
+// console.log(g.next()) // { value: 3, done: false }
+// console.log(g.next(2)) // { value: 2, done: true }
+
+// function* gen2(x){
+//     try {
+//         let y = yield x + 2
+//     } catch (e){
+//         console.log(e)
+//     }
+//     return y
+// }
+// let g2 = gen(1)
+// console.log(g2.next())
+// g2.throw('出错了')
+
+function* gen3() {
+    let url = 'https://api.github.com/users/github'
+    let result = yield fetch(url)
+    console.log(result.bio)
+}
+let g3 = gen3()
+let result = g3.next()
+result.value.then(function(data){
+    // return data.json()
+    let dat = data.json()
+    console.log(dat)
+    return dat
+}).then(function(data){
+    g3.next(data)
+})
+</script>
