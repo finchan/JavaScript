@@ -1,0 +1,23 @@
+<script>
+    async function f() {
+        return 'Hello world'
+    }
+
+    f().then(v => {
+        console.log(v)
+    })
+
+    async function f2() {
+        throw new Error('Error')
+    }
+
+    f2().then(null, e => console.log(e.message))
+
+    async function getTitle(url) {
+        let response = await fetch(url)
+        let html = await response.text()
+        return html
+    }
+    getTitle("https://api.github.com/users/github")
+        .then(console.log)
+</script>
